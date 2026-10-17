@@ -82,6 +82,13 @@ export function WordClock({
                   </span>
                 )
               }
+              if (cell.type === 'plus') {
+                return (
+                  <span key={`${rowIndex}-${index}`} className={mark > 0 ? 'cell on' : 'cell'}>
+                    +
+                  </span>
+                )
+              }
               if (cell.type === 'digit') {
                 return (
                   <span key={`${rowIndex}-${index}`} className={mark === cell.n ? 'cell on' : 'cell'}>
@@ -114,7 +121,11 @@ export function WordClock({
             <span className="live-label">{t.live}</span>
           </p>
           <p className="phrase">{phrase}</p>
-          {lang === 'fa' && <p className="phrase en">{english}</p>}
+          {lang === 'fa' && (
+            <p className="phrase en" dir="ltr">
+              {english}
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -42,6 +42,7 @@ export type Cell =
   | { type: 'empty' }
   | { type: 'icon'; icon: 'clock' | 'power' }
   | { type: 'digit'; n: number }
+  | { type: 'plus' }
   | { type: 'letter'; char: string; word?: string }
 
 export const GRID: Cell[][] = RAW.map((raw, row) =>
@@ -49,6 +50,7 @@ export const GRID: Cell[][] = RAW.map((raw, row) =>
     if (char === ' ') return { type: 'empty' }
     if (char === '*') return { type: 'icon', icon: 'clock' }
     if (char === '^') return { type: 'icon', icon: 'power' }
+    if (char === '+') return { type: 'plus' }
     if (index === 11 && row < 4 && '1234'.includes(char)) return { type: 'digit', n: Number(char) }
     const span = SPANS.find((item) => item.row === row && index >= item.start && index <= item.end)
     return span ? { type: 'letter', char, word: span.word } : { type: 'letter', char }
@@ -109,39 +111,43 @@ function hourIndex(hours: number) {
   return ((hours % 12) + 12) % 12
 }
 
-function blockOf(date: Date) {
-  return Math.floor(date.getMinutes() / 5) * 5
+/** Exact minute the board speaks: 1–34 stay "past", 35–59 are the minutes remaining "to" the next hour. */
+function reading(date: Date) {
+  const minutes = date.getMinutes()
+  const hour = date.getHours()
+  if (minutes === 0) return { relation: 'oclock' as const, minutes: 0, hour }
+  if (minutes <= 34) return { relation: 'past' as const, minutes, hour }
+  return { relation: 'to' as const, minutes: 60 - minutes, hour: hour + 1 }
 }
 
 export function minuteMark(date: Date) {
-  return date.getMinutes() % 5
+  const { relation, minutes } = reading(date)
+  if (relation === 'oclock') return 0
+  return minutes % 5
 }
 
 export function activeWords(date: Date) {
-  const block = blockOf(date)
+  const { relation, minutes, hour } = reading(date)
   const words = ['it', 'is']
-  if (block === 0) {
-    words.push(HOURS[hourIndex(date.getHours())], 'oclock')
-  } else if (block <= 30) {
-    words.push(...MINUTE_WORDS[block], 'minutes', 'past', HOURS[hourIndex(date.getHours())])
-  } else {
-    words.push(
-      ...MINUTE_WORDS[60 - block],
-      'minutes',
-      'to',
-      HOURS[hourIndex(date.getHours() + 1)],
-    )
+  if (relation === 'oclock') {
+    words.push(HOURS[hourIndex(hour)], 'oclock')
+    return words
   }
+  const base = Math.floor(minutes / 5) * 5
+  if (base > 0) words.push(...MINUTE_WORDS[base])
+  words.push('minutes', relation, HOURS[hourIndex(hour)])
   return words
 }
 
 export function phraseEn(date: Date) {
-  const block = blockOf(date)
-  const hour = HOUR_EN[hourIndex(date.getHours())]
-  if (block === 0) return `IT IS ${hour} O'CLOCK`
-  if (block <= 30) return `IT IS ${MINUTE_EN[block]} MINUTES PAST ${hour}`
-  const next = HOUR_EN[hourIndex(date.getHours() + 1)]
-  return `IT IS ${MINUTE_EN[60 - block]} MINUTES TO ${next}`
+  const { relation, minutes, hour } = reading(date)
+  const name = HOUR_EN[hourIndex(hour)]
+  if (relation === 'oclock') return `IT IS ${name} O'CLOCK`
+  const base = Math.floor(minutes / 5) * 5
+  const rest = minutes % 5
+  const amount = [base ? MINUTE_EN[base] : '', rest ? String(rest) : ''].filter(Boolean).join(' ')
+  const way = relation === 'past' ? 'PAST' : 'TO'
+  return `IT IS ${amount} MINUTES ${way} ${name}`
 }
 
 const FA_MINUTE = [
@@ -228,6 +234,7 @@ if (import.meta.env.DEV) {
   }
   for (const raw of RAW) assert([...raw].length === 12, `row length ${raw}`)
   assert(RAW.slice(0, 4).map((raw) => raw.at(-1)).join('') === '1234', 'digit column')
+  assert(GRID[0][10].type === 'plus', 'plus mark sits beside the digits')
   for (const span of SPANS) {
     assert(RAW[span.row].slice(span.start, span.end + 1) === span.expect, span.expect)
   }
@@ -247,4 +254,16 @@ if (import.meta.env.DEV) {
   assert(minuteMark(new Date(2026, 0, 1, 10, 31)) === 1, '10:31 lights 1')
   assert(minuteMark(new Date(2026, 0, 1, 10, 34)) === 4, '10:34 lights 4')
   assert(minuteMark(new Date(2026, 0, 1, 10, 35)) === 0, '10:35 lights no digit')
+  const atDate = (hours: number, minutes: number) => new Date(2026, 0, 1, hours, minutes)
+  assert(
+    at(12, 39) === ['is', 'it', 'minutes', 'one', 'to', 'twenty'].sort().join('|'),
+    '12:39 is twenty and 1 to one',
+  )
+  assert(!activeWords(atDate(12, 39)).includes('mfive'), '12:39 does not light five')
+  assert(minuteMark(atDate(12, 39)) === 1, '12:39 lights 1')
+  assert(phraseEn(atDate(12, 39)) === 'IT IS TWENTY 1 MINUTES TO ONE', '12:39 phrase')
+  assert(phraseEn(atDate(12, 35)) === 'IT IS TWENTY FIVE MINUTES TO ONE', '12:35 phrase')
+  assert(phraseEn(atDate(12, 21)) === 'IT IS TWENTY 1 MINUTES PAST TWELVE', '12:21 phrase')
+  assert(activeWords(atDate(12, 26)).includes('mfive'), '12:26 keeps five inside twenty five')
+  assert(minuteMark(atDate(12, 26)) === 1, '12:26 lights 1')
 }
