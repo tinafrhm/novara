@@ -4,11 +4,14 @@ import { useAnimatedNumber } from '../hooks'
 import {
   FACE_COLORS,
   formatMoney,
+  formatSize,
+  isDefaultConfig,
   formatPhone,
   formatPlus,
   orderLines,
   PHONE_TEL,
   PRICES,
+  SIZES,
 } from '../order'
 import { THEMES } from '../themes'
 import { BellIcon, PhoneIcon, PrintIcon, SpeakerIcon, SunIcon, WhatsAppIcon } from './Icons'
@@ -36,6 +39,7 @@ export function Configurator() {
             <WordClock
               className="lg"
               theme={theme}
+              units={config.size}
               backlight={config.led}
               speaker={config.speaker}
               alarm={config.alarm}
@@ -60,6 +64,30 @@ export function Configurator() {
                     <span>{t.colors[color]}</span>
                     <small>
                       {color === 'standard' ? t.included : formatPlus(PRICES.customColor, lang)}
+                    </small>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>{t.size}</legend>
+              <p className="help">{t.sizeHelp}</p>
+              <div className="sizes" role="radiogroup" aria-label={t.size}>
+                {SIZES.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    role="radio"
+                    aria-checked={config.size === size}
+                    className="swatch"
+                    onClick={() => update({ size })}
+                  >
+                    <span className="num" dir="ltr">
+                      {formatSize(size, lang)}
+                    </span>
+                    <small>
+                      {PRICES.size[size] === 0 ? t.included : formatPlus(PRICES.size[size], lang)}
                     </small>
                   </button>
                 ))}
@@ -189,8 +217,9 @@ function Toggle({
 }
 
 export function MobileBar() {
-  const { lang, t, total, waHref } = useNovara()
+  const { lang, t, config, total, waHref } = useNovara()
   const animated = useAnimatedNumber(total)
+  if (isDefaultConfig(config)) return null
   return (
     <div className="mobile-bar">
       <div className="grow">

@@ -11,6 +11,7 @@ type Props = {
   speaker?: boolean
   alarm?: boolean
   showCaption?: boolean
+  units?: number
   className?: string
 }
 
@@ -37,6 +38,7 @@ export function WordClock({
   speaker = false,
   alarm = false,
   showCaption = false,
+  units,
   className = '',
 }: Props) {
   const { lang, t } = useNovara()
@@ -55,6 +57,7 @@ export function WordClock({
     '--glow': theme.glow,
     '--wall': theme.wall,
     '--bright': String(brightness),
+    ...(units ? { '--clock-units': String(units) } : {}),
   } as CSSProperties
 
   return (

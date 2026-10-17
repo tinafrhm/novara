@@ -98,13 +98,26 @@ const MINUTE_WORDS: Record<number, string[]> = {
   30: ['thirty'],
 }
 
-const MINUTE_EN: Record<number, string> = {
-  5: 'FIVE',
-  10: 'TEN',
-  15: 'FIFTEEN',
-  20: 'TWENTY',
-  25: 'TWENTY FIVE',
-  30: 'THIRTY',
+const ONES_EN = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
+const TEENS_EN = [
+  'TEN',
+  'ELEVEN',
+  'TWELVE',
+  'THIRTEEN',
+  'FOURTEEN',
+  'FIFTEEN',
+  'SIXTEEN',
+  'SEVENTEEN',
+  'EIGHTEEN',
+  'NINETEEN',
+]
+
+function minuteName(minutes: number) {
+  if (minutes < 10) return ONES_EN[minutes]
+  if (minutes < 20) return TEENS_EN[minutes - 10]
+  const tens = minutes < 30 ? 'TWENTY' : 'THIRTY'
+  const ones = minutes % 10
+  return ones ? `${tens} ${ONES_EN[ones]}` : tens
 }
 
 function hourIndex(hours: number) {
@@ -143,11 +156,8 @@ export function phraseEn(date: Date) {
   const { relation, minutes, hour } = reading(date)
   const name = HOUR_EN[hourIndex(hour)]
   if (relation === 'oclock') return `IT IS ${name} O'CLOCK`
-  const base = Math.floor(minutes / 5) * 5
-  const rest = minutes % 5
-  const amount = [base ? MINUTE_EN[base] : '', rest ? String(rest) : ''].filter(Boolean).join(' ')
   const way = relation === 'past' ? 'PAST' : 'TO'
-  return `IT IS ${amount} MINUTES ${way} ${name}`
+  return `IT IS ${minuteName(minutes)} MINUTES ${way} ${name}`
 }
 
 const FA_MINUTE = [
@@ -261,9 +271,11 @@ if (import.meta.env.DEV) {
   )
   assert(!activeWords(atDate(12, 39)).includes('mfive'), '12:39 does not light five')
   assert(minuteMark(atDate(12, 39)) === 1, '12:39 lights 1')
-  assert(phraseEn(atDate(12, 39)) === 'IT IS TWENTY 1 MINUTES TO ONE', '12:39 phrase')
+  assert(phraseEn(atDate(12, 39)) === 'IT IS TWENTY ONE MINUTES TO ONE', '12:39 phrase')
   assert(phraseEn(atDate(12, 35)) === 'IT IS TWENTY FIVE MINUTES TO ONE', '12:35 phrase')
-  assert(phraseEn(atDate(12, 21)) === 'IT IS TWENTY 1 MINUTES PAST TWELVE', '12:21 phrase')
+  assert(phraseEn(atDate(12, 21)) === 'IT IS TWENTY ONE MINUTES PAST TWELVE', '12:21 phrase')
+  assert(phraseEn(atDate(1, 33)) === 'IT IS THIRTY THREE MINUTES PAST ONE', '1:33 phrase')
+  assert(phraseEn(atDate(1, 34)) === 'IT IS THIRTY FOUR MINUTES PAST ONE', '1:34 phrase')
   assert(activeWords(atDate(12, 26)).includes('mfive'), '12:26 keeps five inside twenty five')
   assert(minuteMark(atDate(12, 26)) === 1, '12:26 lights 1')
 }

@@ -53,8 +53,10 @@ const fa = {
   productTitle: 'ساعت کلمه‌ای نوارا',
   productLeadBefore: 'قیمت پایه',
   productLeadAfter:
-    'است. بدنه فلزی است و اپ گوشی، نور و تنظیمات ساعت را کنترل می‌کند. رنگ سفارشی صفحه، اسپیکر، نور LED پشت ساعت و آلارم، هر کدام جدا به جمع اضافه می‌شوند.',
+    'است. بدنه فلزی است و اپ گوشی، نور و تنظیمات ساعت را کنترل می‌کند. رنگ سفارشی صفحه، اندازهٔ بزرگ‌تر، اسپیکر، نور LED پشت ساعت و آلارم، هر کدام جدا به جمع اضافه می‌شوند.',
   tomanNote: 'مبالغ به تومان است.',
+  size: 'اندازه',
+  sizeHelp: 'اندازهٔ پیش‌فرض ۷۰×۷۰ است. ۶۰×۶۰ هزینه‌ای اضافه نمی‌کند.',
   screenColor: 'رنگ صفحه',
   screenColorHelp:
     'استاندارد، نمای امضای نواراست. کرم، سیاه، آبی یا طوسی، هر کدام ۳ میلیون تومان اضافه می‌کند.',
@@ -156,8 +158,10 @@ const en: typeof fa = {
   productTitle: 'Novara Word Clock',
   productLeadBefore: 'The base price is',
   productLeadAfter:
-    '. The body is metal, and the phone app controls the light and the settings. A custom screen color, a speaker, rear LED light, or an alarm each add their own amount.',
+    '. The body is metal, and the phone app controls the light and the settings. A custom screen color, a larger size, a speaker, rear LED light, or an alarm each add their own amount.',
   tomanNote: 'Amounts are in Toman.',
+  size: 'Size',
+  sizeHelp: '70×70 is the standard size. 60×60 adds nothing.',
   screenColor: 'Screen color',
   screenColorHelp:
     'Signature is the finish in the photographs. Cream, black, blue, or gray each add 3,000,000 Toman.',

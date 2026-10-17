@@ -3,8 +3,12 @@ import { dictionary, type Lang } from './i18n'
 export const FACE_COLORS = ['standard', 'cream', 'black', 'blue', 'gray'] as const
 export type FaceColor = (typeof FACE_COLORS)[number]
 
+export const SIZES = [60, 70, 90, 120] as const
+export type ClockSize = (typeof SIZES)[number]
+
 export type Config = {
   color: FaceColor
+  size: ClockSize
   speaker: boolean
   led: boolean
   alarm: boolean
@@ -13,6 +17,12 @@ export type Config = {
 export const PRICES = {
   base: 35_000_000,
   customColor: 3_000_000,
+  size: {
+    60: 0,
+    70: 0,
+    90: 5_000_000,
+    120: 10_000_000,
+  },
   speaker: 4_000_000,
   led: 3_000_000,
   alarm: 4_000_000,
@@ -25,6 +35,14 @@ const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹'
 
 export function isFaceColor(value: unknown): value is FaceColor {
   return typeof value === 'string' && (FACE_COLORS as readonly string[]).includes(value)
+}
+
+export function isClockSize(value: unknown): value is ClockSize {
+  return typeof value === 'number' && (SIZES as readonly number[]).includes(value)
+}
+
+export function formatSize(size: ClockSize, lang: Lang) {
+  return localizeDigits(`${size}×${size}`, lang)
 }
 
 export function localizeDigits(value: string, lang: Lang) {
@@ -47,10 +65,15 @@ export function formatPlus(amount: number, lang: Lang) {
   return lang === 'fa' ? `+${formatted} میلیون` : `+${formatted} million`
 }
 
+export function isDefaultConfig(config: Config) {
+  return config.color === 'standard' && config.size === 70 && !config.speaker && !config.led && !config.alarm
+}
+
 export function totalPrice(config: Config) {
   return (
     PRICES.base +
     (config.color === 'standard' ? 0 : PRICES.customColor) +
+    PRICES.size[config.size] +
     (config.speaker ? PRICES.speaker : 0) +
     (config.led ? PRICES.led : 0) +
     (config.alarm ? PRICES.alarm : 0)
@@ -77,6 +100,12 @@ export function orderLines(lang: Lang, config: Config): OrderLine[] {
       key: 'color',
       label: `${t.screenColor} · ${t.colors[config.color]}`,
       value: config.color === 'standard' ? t.included : formatMoney(PRICES.customColor, lang),
+      muted: false,
+    },
+    {
+      key: 'size',
+      label: `${t.size} · ${formatSize(config.size, lang)}`,
+      value: PRICES.size[config.size] === 0 ? t.included : formatMoney(PRICES.size[config.size], lang),
       muted: false,
     },
     {
@@ -107,6 +136,7 @@ export function orderMessage(lang: Lang, config: Config, total: number) {
     t.waGreeting,
     `${t.productLabel}: ${t.productName}`,
     `${t.screenColor}: ${t.colors[config.color]}`,
+    `${t.size}: ${formatSize(config.size, lang)}`,
     `${t.speaker}: ${yesNo(config.speaker)}`,
     `${t.led}: ${yesNo(config.led)}`,
     `${t.alarm}: ${yesNo(config.alarm)}`,

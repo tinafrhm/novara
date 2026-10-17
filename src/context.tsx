@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { dictionary, type Lang } from './i18n'
-import { isFaceColor, orderMessage, totalPrice, whatsappHref, type Config } from './order'
+import { isClockSize, isFaceColor, orderMessage, totalPrice, whatsappHref, type Config } from './order'
 
 type Store = {
   lang: Lang
@@ -25,7 +25,7 @@ function loadLang(): Lang {
 }
 
 function loadConfig(): Config {
-  const fallback: Config = { color: 'standard', speaker: false, led: false, alarm: false }
+  const fallback: Config = { color: 'standard', size: 70, speaker: false, led: false, alarm: false }
   try {
     const raw = sessionStorage.getItem('novara-config')
     if (!raw) return fallback
@@ -33,6 +33,7 @@ function loadConfig(): Config {
     if (!isFaceColor(data.color)) return fallback
     return {
       color: data.color,
+      size: isClockSize(data.size) ? data.size : 70,
       speaker: Boolean(data.speaker),
       led: Boolean(data.led),
       alarm: Boolean(data.alarm),
