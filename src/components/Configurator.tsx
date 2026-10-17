@@ -112,15 +112,15 @@ export function Configurator() {
               <ol className="steps">
                 <li>
                   <b>{t.step1Title}</b>
-                  {t.step1Text}
+                  <span>{t.step1Text}</span>
                 </li>
                 <li>
                   <b>{t.step2Title}</b>
-                  {t.step2Text}
+                  <span>{t.step2Text}</span>
                 </li>
                 <li>
                   <b>{t.step3Title}</b>
-                  {t.step3Text}
+                  <span>{t.step3Text}</span>
                 </li>
               </ol>
               <div className="actions">
