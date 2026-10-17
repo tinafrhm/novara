@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نووارا | زمان در سکوت</title>
+    <meta
+      name="description"
+      content="نووارا ساعت کلمه‌ای هوشمند است؛ با گوشی وصل می‌شود و میزان نور و رنگ نور آن تنظیم می‌شود. Novara is a Wi-Fi word clock."
+    />
+    <meta name="theme-color" content="#071019" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      try {
+        var l = sessionStorage.getItem('novara-lang')
+        if (l === 'en') {
+          document.documentElement.lang = 'en'
+          document.documentElement.dir = 'ltr'
+          document.title = 'Novara | Time in Silence'
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
