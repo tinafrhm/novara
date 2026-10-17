@@ -757,24 +757,31 @@ legend { font-weight: 600; padding: 0; margin-bottom: 6px; }
   body:has(.mobile-bar) { padding-bottom: 84px; }
 }
 
-@page { margin: 16px; }
+@page {
+  margin: 16px;
+  margin-top: 0;
+}
 @media print {
   .no-print { display: none !important; }
+  .header { border: 0 !important; }
   body { background: white !important; color: #14202b; padding: 0 !important; }
   .print-sheet {
     display: block;
     max-width: 720px;
     margin: 0 auto;
+    padding-top: 32px;
+    border: 0;
     color: #14202b;
     font-family: Vazirmatn, Tahoma, sans-serif;
   }
-  .print-head { text-align: center; }
+  .print-head { text-align: center; border: 0; }
   .print-brand-row {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     margin: 0;
+    border: 0;
   }
   .print-logo {
     display: flex;
