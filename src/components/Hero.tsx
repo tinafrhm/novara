@@ -36,9 +36,8 @@ export function Hero() {
             <WordClock
               className="lg"
               theme={theme}
-              backlight={config.led}
-              speaker={config.speaker}
-              alarm={config.alarm}
+              backlight={config.backlight}
+              speaker={config.music}
               showCaption
             />
           </div>

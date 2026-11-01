@@ -93,6 +93,24 @@ export function SpeakerIcon() {
   )
 }
 
+export function EngraveIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 20h6.5L20 10.5 15.5 6 6 15.5V20Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M13.2 8.3 17.7 12.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function SteelIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M4 15.5 9 10l4 4 2.5-2.5L20 16" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function BellIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

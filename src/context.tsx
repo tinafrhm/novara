@@ -25,18 +25,27 @@ function loadLang(): Lang {
 }
 
 function loadConfig(): Config {
-  const fallback: Config = { color: 'standard', size: 70, speaker: false, led: false, alarm: false }
+  const fallback: Config = {
+    color: 'standard',
+    size: 70,
+    music: false,
+    backlight: false,
+    engraving: false,
+    steel: false,
+    painting: false,
+  }
   try {
     const raw = sessionStorage.getItem('novara-config')
     if (!raw) return fallback
-    const data = JSON.parse(raw) as Partial<Config>
-    if (!isFaceColor(data.color)) return fallback
+    const data = JSON.parse(raw) as Partial<Config> & { speaker?: boolean; led?: boolean }
     return {
-      color: data.color,
+      color: isFaceColor(data.color) ? data.color : 'standard',
       size: isClockSize(data.size) ? data.size : 70,
-      speaker: Boolean(data.speaker),
-      led: Boolean(data.led),
-      alarm: Boolean(data.alarm),
+      music: Boolean(data.music ?? data.speaker),
+      backlight: Boolean(data.backlight ?? data.led),
+      engraving: Boolean(data.engraving),
+      steel: Boolean(data.steel),
+      painting: Boolean(data.painting),
     }
   } catch {
     return fallback

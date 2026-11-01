@@ -2,7 +2,9 @@ import type { ReactNode } from 'react'
 import { useNovara } from '../context'
 import { useAnimatedNumber } from '../hooks'
 import {
+  colorPrice,
   FACE_COLORS,
+  formatMillions,
   formatMoney,
   formatSize,
   isDefaultConfig,
@@ -11,10 +13,11 @@ import {
   orderLines,
   PHONE_TEL,
   PRICES,
+  SIZE_BASE,
   SIZES,
 } from '../order'
 import { THEMES } from '../themes'
-import { BellIcon, PhoneIcon, PrintIcon, SpeakerIcon, SunIcon, WhatsAppIcon } from './Icons'
+import { EngraveIcon, PaletteIcon, PhoneIcon, PrintIcon, SpeakerIcon, SteelIcon, SunIcon, WhatsAppIcon } from './Icons'
 import { WordClock } from './WordClock'
 
 export function Configurator() {
@@ -40,9 +43,8 @@ export function Configurator() {
               className="lg"
               theme={theme}
               units={config.size}
-              backlight={config.led}
-              speaker={config.speaker}
-              alarm={config.alarm}
+              backlight={config.backlight}
+              speaker={config.music}
               showCaption
             />
           </div>
@@ -63,7 +65,9 @@ export function Configurator() {
                     <span className="dot" style={{ background: THEMES[color].swatch }} />
                     <span>{t.colors[color]}</span>
                     <small>
-                      {color === 'standard' ? t.included : formatPlus(PRICES.customColor, lang)}
+                      {colorPrice(color, config.size) === 0
+                        ? t.included
+                        : formatPlus(colorPrice(color, config.size), lang)}
                     </small>
                   </button>
                 ))}
@@ -86,37 +90,51 @@ export function Configurator() {
                     <span className="num" dir="ltr">
                       {formatSize(size, lang)}
                     </span>
-                    <small>
-                      {PRICES.size[size] === 0 ? t.included : formatPlus(PRICES.size[size], lang)}
-                    </small>
+                    <small>{formatMillions(SIZE_BASE[size], lang)}</small>
                   </button>
                 ))}
               </div>
             </fieldset>
 
             <Toggle
-              pressed={config.speaker}
-              title={t.speaker}
-              text={t.speakerHelp}
-              price={formatPlus(PRICES.speaker, lang)}
+              pressed={config.music}
+              title={t.music}
+              text={t.musicHelp}
+              price={formatPlus(PRICES.music[config.size], lang)}
               icon={<SpeakerIcon />}
-              onClick={() => update({ speaker: !config.speaker })}
+              onClick={() => update({ music: !config.music })}
             />
             <Toggle
-              pressed={config.led}
-              title={t.led}
-              text={t.ledHelp}
-              price={formatPlus(PRICES.led, lang)}
+              pressed={config.backlight}
+              title={t.backlight}
+              text={t.backlightHelp}
+              price={formatPlus(PRICES.backlight[config.size], lang)}
               icon={<SunIcon />}
-              onClick={() => update({ led: !config.led })}
+              onClick={() => update({ backlight: !config.backlight })}
             />
             <Toggle
-              pressed={config.alarm}
-              title={t.alarm}
-              text={t.alarmHelp}
-              price={formatPlus(PRICES.alarm, lang)}
-              icon={<BellIcon />}
-              onClick={() => update({ alarm: !config.alarm })}
+              pressed={config.engraving}
+              title={t.engraving}
+              text={t.engravingHelp}
+              price={formatPlus(PRICES.engraving[config.size], lang)}
+              icon={<EngraveIcon />}
+              onClick={() => update({ engraving: !config.engraving })}
+            />
+            <Toggle
+              pressed={config.steel}
+              title={t.steel}
+              text={t.steelHelp}
+              price={formatPlus(PRICES.steel[config.size], lang)}
+              icon={<SteelIcon />}
+              onClick={() => update({ steel: !config.steel })}
+            />
+            <Toggle
+              pressed={config.painting}
+              title={t.painting}
+              text={t.paintingHelp}
+              price={formatPlus(PRICES.painting[config.size], lang)}
+              icon={<PaletteIcon />}
+              onClick={() => update({ painting: !config.painting })}
             />
 
             <div className="summary" id="order">
