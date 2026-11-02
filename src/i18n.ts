@@ -56,7 +56,8 @@ const fa = {
     'است و برای اندازهٔ ۷۰×۷۰ حساب شده. اندازهٔ بزرگ‌تر، رنگ صفحه و امکانات اضافه، هر کدام جدا به جمع می‌آیند.',
   tomanNote: 'مبالغ به تومان است.',
   size: 'اندازه',
-  sizeHelp: '۷۰×۷۰ اندازهٔ پایه است. قیمت هر اندازه روی خودش نوشته شده.',
+  sizeTabletop: 'رومیزی',
+  sizeHelp: '۲۵×۲۵ رومیزی است و امکانات اضافه ندارد. قیمت هر اندازه روی خودش نوشته شده.',
   screenColor: 'رنگ صفحه',
   screenColorHelp:
     'استاندارد شامل قیمت پایه است. سفید و طوسی یک نرخ دارند، بژ و کرم نرخ دیگری، و رنگ سفارشی جداست. این مبلغ با اندازه عوض می‌شود.',
@@ -166,7 +167,8 @@ const en: typeof fa = {
     '. It is the 70×70 size. A larger size, a screen color, and the extras each add their own amount.',
   tomanNote: 'Amounts are in Toman.',
   size: 'Size',
-  sizeHelp: '70×70 is the base size. Each size shows its own price.',
+  sizeTabletop: 'Tabletop',
+  sizeHelp: '25×25 is the tabletop clock and has no extras. Each size shows its own price.',
   screenColor: 'Screen color',
   screenColorHelp:
     'Signature is included. White and gray share one rate, beige and cream another, and a custom color is separate. The amount changes with the size.',

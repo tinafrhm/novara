@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { dictionary, type Lang } from './i18n'
-import { isClockSize, isFaceColor, orderMessage, totalPrice, whatsappHref, type Config } from './order'
+import { isFaceColor, orderMessage, totalPrice, whatsappHref, type Config } from './order'
 
 type Store = {
   lang: Lang
@@ -40,7 +40,7 @@ function loadConfig(): Config {
     const data = JSON.parse(raw) as Partial<Config> & { speaker?: boolean; led?: boolean }
     return {
       color: isFaceColor(data.color) ? data.color : 'standard',
-      size: isClockSize(data.size) ? data.size : 70,
+      size: 70,
       music: Boolean(data.music ?? data.speaker),
       backlight: Boolean(data.backlight ?? data.led),
       engraving: Boolean(data.engraving),

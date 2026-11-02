@@ -6,10 +6,11 @@ import {
   FACE_COLORS,
   formatMillions,
   formatMoney,
-  formatSize,
+  localizeDigits,
   isDefaultConfig,
   formatPhone,
   formatPlus,
+  offersExtras,
   orderLines,
   PHONE_TEL,
   PRICES,
@@ -22,7 +23,8 @@ import { WordClock } from './WordClock'
 
 export function Configurator() {
   const { lang, t, config, update, total, waHref } = useNovara()
-  const theme = THEMES[config.color]
+  const extras = offersExtras(config.size)
+  const theme = THEMES[extras ? config.color : 'standard']
   const lines = orderLines(lang, config)
   const animated = useAnimatedNumber(total)
 
@@ -43,12 +45,13 @@ export function Configurator() {
               className="lg"
               theme={theme}
               units={config.size}
-              backlight={config.backlight}
-              speaker={config.music}
+              backlight={extras && config.backlight}
+              speaker={extras && config.music}
               showCaption
             />
           </div>
           <div className="options">
+            {extras && (
             <fieldset>
               <legend>{t.screenColor}</legend>
               <p className="help">{t.screenColorHelp}</p>
@@ -73,6 +76,7 @@ export function Configurator() {
                 ))}
               </div>
             </fieldset>
+            )}
 
             <fieldset>
               <legend>{t.size}</legend>
@@ -88,14 +92,17 @@ export function Configurator() {
                     onClick={() => update({ size })}
                   >
                     <span className="num" dir="ltr">
-                      {formatSize(size, lang)}
+                      {localizeDigits(`${size}×${size}`, lang)}
                     </span>
+                    {size === 25 && <span>{t.sizeTabletop}</span>}
                     <small>{formatMillions(SIZE_BASE[size], lang)}</small>
                   </button>
                 ))}
               </div>
             </fieldset>
 
+            {extras && (
+              <>
             <Toggle
               pressed={config.music}
               title={t.music}
@@ -136,6 +143,8 @@ export function Configurator() {
               icon={<PaletteIcon />}
               onClick={() => update({ painting: !config.painting })}
             />
+              </>
+            )}
 
             <div className="summary" id="order">
               <h3>{t.summary}</h3>

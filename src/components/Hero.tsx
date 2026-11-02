@@ -1,6 +1,6 @@
 import wifiAnim from '../lottie/wifi.json'
 import { useNovara } from '../context'
-import { formatMoney, PRICES } from '../order'
+import { formatMoney, offersExtras, PRICES } from '../order'
 import { THEMES } from '../themes'
 import { LottiePlayer } from './LottiePlayer'
 import { WhatsAppIcon } from './Icons'
@@ -8,7 +8,8 @@ import { WordClock } from './WordClock'
 
 export function Hero() {
   const { lang, t, config, waHref } = useNovara()
-  const theme = THEMES[config.color]
+  const extras = offersExtras(config.size)
+  const theme = THEMES[extras ? config.color : 'standard']
   return (
     <section id="intro" className="hero">
       <div className="wrap hero-grid">
@@ -18,7 +19,7 @@ export function Hero() {
           <p className="lead">{t.heroLead}</p>
           <p className="from">
             <span>{t.heroFrom}</span>
-            <strong dir="ltr">{formatMoney(PRICES.base, lang)}</strong>
+            <strong dir="ltr">{formatMoney(PRICES.from, lang)}</strong>
           </p>
           <div className="hero-actions">
             <a className="btn btn-primary" href="#product">
@@ -36,8 +37,8 @@ export function Hero() {
             <WordClock
               className="lg"
               theme={theme}
-              backlight={config.backlight}
-              speaker={config.music}
+              backlight={extras && config.backlight}
+              speaker={extras && config.music}
               showCaption
             />
           </div>
